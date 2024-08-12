@@ -24,7 +24,7 @@ export type usersType = {
 }
 export const useChangeAddress = async () => {
     try {
-        const {users} = await Api.users.searchUsers();
+        const {users} = await Api.searchUsers.searchUsers();
         users.map((item: usersType) => {
             if (item.address && typeof item.address === 'object') {
                 item.address = `${item.address.city} ${item.address.address}`
