@@ -1,0 +1,1 @@
+export const user = ['id', 'firstName', 'lastName', 'maidenName', 'age', 'gender', 'phone', 'address'];
