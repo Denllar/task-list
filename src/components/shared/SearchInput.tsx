@@ -1,15 +1,19 @@
-import React from "react";
 import { Input } from "@/components/ui/input";
 
-export const SearchInput: React.FC = () => {
-  const [search, setSearch] = React.useState("");
 
-  console.log(search);
-  
+interface SearchInputProps {
+  search: string;
+  setSearch: (search: string) => void;
+}
+export const SearchInput: React.FC<SearchInputProps> = ({search, setSearch}) => {
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <div className="dark:bg-background dark:text-foreground">
-      <Input onChange={(e) => setSearch(e.target.value)} value={search} placeholder="Search" type="search"/>
+      <Input onChange={onSearch} value={search} placeholder="Search..." type="search"/>
     </div>
   );
 };

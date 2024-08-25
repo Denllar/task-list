@@ -1,6 +1,6 @@
-import {Api} from "../services/api-client";
+import {Api} from "@/services/api-client";
 
-type adressType = {
+export type AddressType = {
     address: string,
     city: string,
     state: string,
@@ -12,7 +12,7 @@ type adressType = {
     },
     country: string
 }
-export type usersType = {
+export type UsersType = {
     id: number,
     firstName: string,
     lastName: string,
@@ -20,12 +20,12 @@ export type usersType = {
     age: number,
     gender: string,
     phone: string,
-    address: adressType | string
+    address: AddressType | string
 }
-export const useChangeAddress = async () => {
+export const getUsers = async (search: string) => {
     try {
-        const {users} = await Api.searchUsers.searchUsers();
-        users.map((item: usersType) => {
+        const {users} = await Api.searchUsers.searchUsers(search);
+        users.map((item: UsersType) => {
             if (item.address && typeof item.address === 'object') {
                 item.address = `${item.address.city} ${item.address.address}`
             }

@@ -16,9 +16,11 @@
     "@mui/x-data-grid": "^7.12.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "debounce": "^2.1.0",
     "lucide-react": "^0.427.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-use": "^17.5.1",
     "sass": "^1.77.8",
     "tailwind-merge": "^2.5.0",
     "tailwindcss-animate": "^1.0.7"
