@@ -64,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, userModal }) => {
 
           <div className="mr-10 mb-3">
             <p className="opacity-50 text-[10px] italic">Адрес:</p>
-            <h2>{userModal.address}</h2>
+            <h2>{userModal.address.toString()}</h2>
           </div>
         </div>
       </div>

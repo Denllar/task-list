@@ -11,7 +11,7 @@ interface DataTableProps {
 }
 export const DataTable: React.FC<DataTableProps> = ({ users, isLoading }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [userModal, setUserModal] = React.useState({});
+  const [userModal, setUserModal] = React.useState<UsersType | null>(null);
 
   const openModal = (row: UsersType) => {
     setIsOpen(true);
@@ -27,11 +27,10 @@ export const DataTable: React.FC<DataTableProps> = ({ users, isLoading }) => {
         hideFooter={true}
         loading={isLoading}
         autoHeight={true}
-        onRowClick={(row) => openModal(row)} // модальное окно
-        onColumnResize={(params) => console.log(params)}
+        onRowClick={(obj) => openModal(obj.row)} // модальное окно
         sx={TableStyles}
       />
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} userModal={userModal.row}/>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} userModal={userModal!}/>
     </div>
   );
 };

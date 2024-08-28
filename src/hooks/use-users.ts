@@ -1,9 +1,10 @@
 import React from "react";
 import {useDebounce} from "react-use";
 import { getUsers } from "@/hooks";
+import { UsersType } from "./get-users";
 
 export const useUsers = (search: string) => {
-  const [users, setUsers] = React.useState([]);
+  const [users, setUsers] = React.useState<UsersType[] | []>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   useDebounce(

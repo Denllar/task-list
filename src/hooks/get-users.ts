@@ -26,7 +26,7 @@ export type UsersType = {
     weight: number,
     email: string,
 }
-export const getUsers = async (search: string) => {
+export const getUsers = async (search: string): Promise<UsersType[]> => {
     const filterUsers = [];
     try {
         if (search) {
@@ -46,5 +46,6 @@ export const getUsers = async (search: string) => {
         return filterUsers;
     } catch (err) {
         console.error(err);
+        return [];
     }
 }
