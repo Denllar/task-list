@@ -18,8 +18,6 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, userModal }) => {
     throw new Error("Modal root element not found");
   }
 
-  console.log(userModal);
-
   return ReactDOM.createPortal(
     <div onClick={onClose} className="w-[100%] h-[100%] bg-black bg-opacity-50 fixed top-0 left-0 flex items-center justify-center">
       <div onClick={(e) => e.stopPropagation()} className="flex justify-between items-center rounded-2xl border border-slate-[#292524] w-[30%] max-w-[800px] p-3 bg-[#0c0a09]">
