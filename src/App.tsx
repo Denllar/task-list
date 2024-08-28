@@ -9,7 +9,7 @@ function App() {
   return (
     <div className='w-[100%] m-auto max-w-[1200px] mt-10 dark'>
       <SearchInput search={search} setSearch={setSearch}/>
-      <DataTable users={users} isLoading={isLoading} />
+      <DataTable users={users} isLoading={isLoading}/> 
     </div>
   )
 }

@@ -1,7 +1,7 @@
-import {user} from "@/constants";
+import {column} from "@/constants";
 import { GridColDef } from '@mui/x-data-grid';
 
-const columns: GridColDef[] = user.map((item) => {
+const columns: GridColDef[] = column.map((item) => {
   return {
     field: item,
     headerName: item[0].toUpperCase() + item.slice(1).replace(/([A-Z])/g, " $1"),
