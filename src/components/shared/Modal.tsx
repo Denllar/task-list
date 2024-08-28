@@ -22,7 +22,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, userModal }) => {
     <div onClick={onClose} className="w-[100%] h-[100%] bg-black bg-opacity-50 fixed top-0 left-0 flex items-center justify-center">
       <div onClick={(e) => e.stopPropagation()} className="flex justify-between items-center rounded-2xl border border-slate-[#292524] w-[30%] max-w-[800px] p-3 bg-[#0c0a09]">
         <div>
-          <img width={300} src="./public/user.png" alt="user" />
+          <img width={300} src="user.png" alt="user" />
         </div>
 
         <div>
