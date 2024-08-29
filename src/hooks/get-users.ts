@@ -43,6 +43,7 @@ export const getUsers = async (search: string): Promise<UsersType[]> => {
                 item.address = `${item.address.city} ${item.address.address}`
             }
         })
+
         return filterUsers;
     } catch (err) {
         console.error(err);

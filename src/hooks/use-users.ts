@@ -10,9 +10,12 @@ export const useUsers = (search: string) => {
   useDebounce(
     () => {
       const fetchUsers = async () => {
+        setUsers([]);
         setIsLoading(true);
+
         const data = await getUsers(search);
-        setUsers(data);
+
+        setUsers(prev => [...prev, ...data]);
         setIsLoading(false);
       };
       fetchUsers();
