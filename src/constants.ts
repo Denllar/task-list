@@ -1,2 +1,14 @@
-export const user = ['id', 'firstName', 'lastName', 'maidenName', 'age', 'gender', 'phone', 'address', 'height', 'weight', 'email'];
-export const column = user.slice(0, 8);
+export const months = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь"
+];
