@@ -42,7 +42,7 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
 
   React.useEffect(() => {
     getTasks();
-  }, [getTasks, isOp]);
+  }, [getTasks, isOp, isDone]);
 
   React.useEffect(() => {
     const taskDate = new Date(

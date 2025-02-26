@@ -43,32 +43,49 @@ export const Main: React.FC<MainProps> = ({ currentMonthAndYear, tasks, setTasks
 
   return (
     <div>
-      {Object.keys(groupedTasks).map((year) => (
-        <div key={year} className='flex flex-col justify-center items-center mb-10 mt-10'>
-          {Object.keys(groupedTasks[year]).map((month) => {
-            const daysWithTasks = Object.keys(groupedTasks[year][month]).some(day => 
-              groupedTasks[year][month][day].some(task => 
-                task.name.toLowerCase().includes(searchValue.toLowerCase())
-              )
-            );
+      {Object.keys(groupedTasks)
+        .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем года
+        .map((year) => (
+          <div key={year} className='flex flex-col justify-center items-center mb-10 mt-10'>
+            {Object.keys(groupedTasks[year])
+              .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем месяцы
+              .map((month) => {
+                let monthTaskCounter = -1;
+                
+                const daysWithTasks = Object.keys(groupedTasks[year][month]).some(day => 
+                  groupedTasks[year][month][day].some(task => 
+                    task.name.toLowerCase().includes(searchValue.toLowerCase())
+                  )
+                );
 
-            return daysWithTasks ? (
-              <div key={month} className='flex w-full flex-col gap-4 justify-center items-center p-4'>
-                <h3 className='text-xl text-white font-bold mb-4'>{months[parseInt(month) - 1]}</h3>
-                {Object.keys(groupedTasks[year][month]).map((day) => (
-                  <div key={day} className='flex flex-col w-full justify-center items-center'>
-                    {groupedTasks[year][month][day]
-                      .filter(task => task.name.toLowerCase().includes(searchValue.toLowerCase()))
-                      .map((task, index) => (
-                        <Task key={task.id} index={index} task={task} setTasks={setTasks} currentMonthAndYear={currentMonthAndYear}/>
-                    ))}
+                return daysWithTasks ? (
+                  <div key={month} className='flex w-full flex-col gap-4 justify-center items-center p-4'>
+                    <h3 className='text-xl text-white font-bold mb-4'>{months[parseInt(month) - 1]}</h3>
+                    {Object.keys(groupedTasks[year][month])
+                      .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем дни по возрастанию
+                      .map((day) => (
+                        <div key={day} className='flex flex-col w-full justify-center items-center'>
+                          {groupedTasks[year][month][day]
+                            .filter(task => task.name.toLowerCase().includes(searchValue.toLowerCase()))
+                            .map((task) => {
+                              monthTaskCounter++; // Увеличиваем счетчик для каждой задачи
+                              return (
+                                <Task 
+                                  key={task.id} 
+                                  index={monthTaskCounter} 
+                                  task={task} 
+                                  setTasks={setTasks} 
+                                  currentMonthAndYear={currentMonthAndYear}
+                                />
+                              );
+                            })}
+                        </div>
+                      ))}
                   </div>
-                ))}
-              </div>
-            ) : null; // Если нет задач, не рендерим месяц
-          })}
-        </div>
-      ))}
+                ) : null;
+              })}
+          </div>
+        ))}
     </div>
   );
 };

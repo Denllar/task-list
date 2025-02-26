@@ -45,10 +45,9 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, method, r
       month: "",
       year: "",
       inThisMonth: true,
-      isDone: false
+      isDone: state.isDone
     });
   }
-  //(state.name.length === 0 || state.year.length===0) && state.day.length<0
   const isDisabled = state.name.length==0;
 
   if (!isOpen) {
