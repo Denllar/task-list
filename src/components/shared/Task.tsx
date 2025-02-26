@@ -63,23 +63,26 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
       parseInt(task.day)
     );
     const today = new Date();
-    if (taskDate < today) {
+    if (taskDate < today && !isDone) {
       return 'border-4 border-red-600'
     } 
-    // return 'border-4 border-green-600'
+    return ''
   };
 
   const isDoneTask = () => {
     editTasks(task.id, { ...task, isDone: !task.isDone });
     setIsDone(!task.isDone);
-    if (task.isDone){
-      return 'border-4 border-green-600'
-    }
   }
 
   return (
     <div className="flex w-full">
-      <div className={cn("flex w-full justify-between bg-white mb-4 hover:shadow-lg hover:border-gray-300 hover:shadow-gray-300/40 rounded-xl py-4 px-5 hover:-translate-y-0.5 transition-all duration-200 ease-in-out", isPastTask())}>
+      <div className={cn(
+        "flex w-full justify-between bg-white mb-4 hover:shadow-lg hover:border-gray-300 hover:shadow-gray-300/40 rounded-xl py-4 px-5 hover:-translate-y-0.5 transition-all duration-200 ease-in-out",
+        {
+          'border-4 border-green-600': isDone,
+          'border-4 border-red-600': !isDone && isPastTask() !== ''
+        }
+      )}>
         <div>
           <p className="flex items-center text-gray-600 mt-1">
             {index+1}) {task.name}
