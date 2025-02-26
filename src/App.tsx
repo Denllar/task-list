@@ -13,6 +13,7 @@ export interface ITask {
   month: string;
   year: string;
   inThisMonth: boolean
+  isDone: boolean
 }
 
 
@@ -22,7 +23,8 @@ const task = {
   day: "",
   month: "",
   year: "",
-  inThisMonth: true
+  inThisMonth: true,
+  isDone: false
 }
 
 const currentDate = new Date();

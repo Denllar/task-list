@@ -13,6 +13,7 @@ type tTask = {
   month: string;
   year: string;
   inThisMonth: boolean
+  isDone: boolean
 }
 
 interface ModalProps {
@@ -44,6 +45,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, method, r
       month: "",
       year: "",
       inThisMonth: true,
+      isDone: false
     });
   }
   //(state.name.length === 0 || state.year.length===0) && state.day.length<0

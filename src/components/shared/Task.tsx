@@ -5,6 +5,7 @@ import { Modal } from './Modal';
 import { useEditTask } from '@/hooks/edit-tasks';
 import { useGetTask } from '@/hooks/get-tasks';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
 
 interface TaskProps {
   task: ITask,
@@ -21,11 +22,15 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
   const {editTasks} = useEditTask(currentMonthAndYear);
   const { getTasks } = useGetTask(setTasks);
   const [isOp, setIsOp] = React.useState(false)
+  const [isDone, setIsDone] = React.useState(task.isDone);
+  const [isDisabled, setIsDisabled] = React.useState(false);
 
   const handleDelete = async () => {
     try {
-      await deleteTask();
-      setTasks(prev => prev.filter(t => t.id !== task.id));
+      if (confirm('Вы уверены, что хотите удалить задачу?')) {  
+        await deleteTask();
+        setTasks(prev => prev.filter(t => t.id !== task.id));
+      }
     } catch (error) {
       console.error('Ошибка при удалении задачи:', error);
     }
@@ -39,6 +44,18 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
     getTasks();
   }, [getTasks, isOp]);
 
+  React.useEffect(() => {
+    const taskDate = new Date(
+      2000 + parseInt(task.year),
+      parseInt(task.month) - 1,
+      parseInt(task.day)
+    );
+    const today = new Date();
+    if (taskDate < today) {
+      setIsDisabled(true);
+    }
+  }, [task.year, task.month, task.day]);
+
   const isPastTask = () => {
     const taskDate = new Date(
       2000 + parseInt(task.year),
@@ -46,11 +63,19 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
       parseInt(task.day)
     );
     const today = new Date();
-    if (taskDate < today){
+    if (taskDate < today) {
       return 'border-4 border-red-600'
     } 
     // return 'border-4 border-green-600'
   };
+
+  const isDoneTask = () => {
+    editTasks(task.id, { ...task, isDone: !task.isDone });
+    setIsDone(!task.isDone);
+    if (task.isDone){
+      return 'border-4 border-green-600'
+    }
+  }
 
   return (
     <div className="flex w-full">
@@ -60,12 +85,15 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
             {index+1}) {task.name}
           </p>
         </div>
-        <div className="flex items-center" style={{ opacity: 1, transform: 'none' }}>
+
+        <div className="flex items-center gap-2" style={{ opacity: 1, transform: 'none' }}>
           <div className="text-gray-400">
           {
             task.inThisMonth ? "В течении месяца" : `до ${task.day + '.' + task.month + '.' + task.year}`
           }
           </div>
+
+          <Switch checked={isDone} onClick={isDoneTask} disabled={isDisabled}/>
 
           <div onClick={openEditModal} className="flex items-center ml-3 cursor-pointer">
             <svg
