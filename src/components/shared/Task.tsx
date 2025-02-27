@@ -3,7 +3,6 @@ import { ITask } from "@/App";
 import { useDeleteTask } from "@/hooks/delete-task";
 import { Modal } from './Modal';
 import { useEditTask } from '@/hooks/edit-tasks';
-import { useGetTask } from '@/hooks/get-tasks';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 
@@ -20,10 +19,8 @@ interface TaskProps {
 export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthAndYear }) => {
   const { deleteTask } = useDeleteTask(task.id);
   const {editTasks} = useEditTask(currentMonthAndYear);
-  const { getTasks } = useGetTask(setTasks);
   const [isOp, setIsOp] = React.useState(false)
   const [isDone, setIsDone] = React.useState(task.isDone);
-  const [isDisabled, setIsDisabled] = React.useState(false);
 
   const handleDelete = async () => {
     try {
@@ -39,18 +36,6 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
   const openEditModal = () => {
     setIsOp(true);
   }
-
-  React.useEffect(() => {
-    const taskDate = new Date(
-      2000 + parseInt(task.year),
-      parseInt(task.month) - 1,
-      parseInt(task.day)
-    );
-    const today = new Date();
-    if (taskDate < today) {
-      setIsDisabled(true);
-    }
-  }, [task.year, task.month, task.day]);
 
   const isPastTask = () => {
     const taskDate = new Date(
