@@ -66,6 +66,12 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
   return ReactDOM.createPortal(
     <div className="w-[100%] h-[100%] bg-black bg-opacity-50 fixed top-0 left-0 flex items-center justify-center">
       <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-3 justify-between items-center rounded-2xl border border-slate-[#292524] w-[50%] max-w-[800px] p-3 bg-background">
+        <div className="text-white text-2xl font-bold mb-6">
+          {
+            method==='post' ? 'Создать задачу' : 'Измененить задачу'
+          }
+        </div>
+        
         <Input type='text' placeholder='Название задачи' value={state.name} onChange={(e) => {
           setState({...state, name: e.target.value})
           setIsOnChange(true)
