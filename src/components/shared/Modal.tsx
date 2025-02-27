@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { InputOTPWithSeparator, LabelDemo } from "@/components/shared";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
+import { ITask } from "@/App";
+import { useGetTask } from "@/hooks/get-tasks";
 
 type tTask = {
   name: string;
@@ -20,13 +21,20 @@ interface ModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   task: tTask,
+  setTasks: React.Dispatch<React.SetStateAction<ITask[]>>;
   method: string
   requestToServer: any;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, method, requestToServer }) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks, method, requestToServer }) => {
   const [state, setState] = React.useState(task);  
   const [isOnChange, setIsOnChange] = React.useState(false);
+  const { getTasks } = useGetTask(setTasks);
+
+  React.useEffect(() => {
+    setState(task);
+    setIsOnChange(false);
+  }, [isOpen, task]);
 
   React.useEffect(() => {
     setState(prev => ({
@@ -36,17 +44,12 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, method, r
   }, [state.day]);
   
   const requestTaskAndClose = async () => {
-    await requestToServer(state);
-    setIsOpen(false);
-    setState({
-      name: "",
-      description: "",
-      day: "",
-      month: "",
-      year: "",
-      inThisMonth: true,
+    await requestToServer({
+      ...state,
       isDone: state.isDone
     });
+    await getTasks();
+    setIsOpen(false);
   }
   const isDisabled = state.name.length==0;
 

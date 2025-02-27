@@ -41,10 +41,6 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
   }
 
   React.useEffect(() => {
-    getTasks();
-  }, [getTasks, isOp, isDone]);
-
-  React.useEffect(() => {
     const taskDate = new Date(
       2000 + parseInt(task.year),
       parseInt(task.month) - 1,
@@ -69,10 +65,37 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
     return ''
   };
 
-  const isDoneTask = () => {
-    editTasks(task.id, { ...task, isDone: !task.isDone });
-    setIsDone(!task.isDone);
+  const isDoneTask = async () => {
+    const newIsDone = !isDone;
+    try {
+      setIsDone(newIsDone);
+      await editTasks(task.id, { ...task, isDone: newIsDone });
+      setTasks(prev => prev.map(t => 
+        t.id === task.id ? { ...t, isDone: newIsDone } : t
+      ));
+    } catch (error) {
+      setIsDone(!newIsDone);
+      console.error('Ошибка при обновлении задачи:', error);
+    }
   }
+
+  const requestToServer = async (data: ITask) => {
+    try {
+      const updatedTask = await editTasks(task.id, {
+        ...data,
+        isDone: task.isDone
+      });
+      setTasks(prev => prev.map(t => 
+        t.id === task.id ? { ...data, id: task.id, isDone: task.isDone } : t
+      ));
+      return updatedTask;
+    } catch (error) {
+      console.error('Ошибка при обновлении задачи:', error);
+      throw error;
+    }
+  }
+    
+  
 
   return (
     <div className="flex w-full">
@@ -96,7 +119,7 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
           }
           </div>
 
-          <Switch checked={isDone} onClick={isDoneTask} disabled={isDisabled}/>
+          <Switch checked={isDone} onClick={isDoneTask}/>
 
           <div onClick={openEditModal} className="flex items-center ml-3 cursor-pointer">
             <svg
@@ -133,8 +156,9 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
         isOpen={isOp} 
         setIsOpen={setIsOp}
         task={task}
+        setTasks={setTasks}
         method={'edit'} 
-        requestToServer={(data: ITask) => editTasks(task.id, data)} 
+        requestToServer={requestToServer} 
       />
     </div>
   );

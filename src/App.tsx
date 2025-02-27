@@ -39,7 +39,7 @@ function App() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tasks, setTasks] = React.useState<ITask[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
-
+  console.log(tasks)
   const { getTasks } = useGetTask(setTasks);
   const { postTask } = usePostTask(currentMonthAndYear);
   
@@ -58,7 +58,7 @@ function App() {
         <TooltipDemo setIsOpen={setIsOpen}/>
       </div>
       <Main currentMonthAndYear={currentMonthAndYear} tasks={tasks} setTasks={setTasks} searchValue={searchValue}/> 
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen} task={task} method={'post'} requestToServer={postTask}/>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} task={task} setTasks={setTasks} method={'post'} requestToServer={postTask}/>
     </div>
   )
 }
