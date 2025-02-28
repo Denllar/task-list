@@ -16,7 +16,9 @@ interface TaskProps {
   }
 }
 
+
 export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthAndYear }) => {
+  const date = new Date();
   const { deleteTask } = useDeleteTask(task.id);
   const {editTasks} = useEditTask(currentMonthAndYear);
   const [isOp, setIsOp] = React.useState(false)
@@ -100,7 +102,7 @@ export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthA
         <div className="flex items-center gap-2" style={{ opacity: 1, transform: 'none' }}>
           <div className="text-gray-400">
           {
-            task.inThisMonth ? "В течении месяца" : `до ${task.day + '.' + task.month + '.' + task.year}`
+            task.day === '' ? "В течении месяца" : `до ${task.day + '.' + task.month + '.' + task.year}`
           }
           </div>
 
