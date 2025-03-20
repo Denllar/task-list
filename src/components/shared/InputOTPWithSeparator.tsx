@@ -18,39 +18,40 @@ interface InputOTPWithSeparatorProps {
 }
 
 export function InputOTPWithSeparator({ state, setState, setIsOnChange }: InputOTPWithSeparatorProps) {
-    const handleChange = (value: string) => {
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsOnChange(true);
-        const numericValue = value.replace(/\D/g, '');
+        const selectedDate = new Date(event.target.value);
+        
+        // Проверяем, является ли дата валидной
+        if (!isNaN(selectedDate.getTime())) {
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+            const year = String(selectedDate.getFullYear()).slice(-2); // Двузначный год
 
-        // Устанавливаем значения для дня, месяца и года
-        const validDay = numericValue.slice(0, 2);
-        const validMonth = numericValue.slice(2, 4);
-        const validYear = numericValue.slice(4, 6);
+            setState({ day, month, year });
+        } else {
+            setState({ day: '', month: '', year: '' });
+        }
+    };
 
-        // Обновляем состояние с новыми значениями
+    const handleMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsOnChange(true);
+        const selectedMonthYear = event.target.value; // Формат: YYYY-MM
+        const [year, month] = selectedMonthYear.split('-');
+
         setState({
-            day: validDay,
-            month: validMonth,
-            year: validYear,
+            day: '', // Оставляем день пустым
+            month: month.padStart(2, '0'), // Форматируем месяц
+            year: year.slice(-2), // Двузначный год
         });
     };
-    
+
     return (
-        <InputOTP maxLength={6} onChange={handleChange}>
-            <InputOTPGroup>
-                <InputOTPSlot placeholder="Д" index={0} value={state.day[0]} />
-                <InputOTPSlot placeholder="Д" index={1} value={state.day[1]} />
-            </InputOTPGroup>
-            <InputOTPSeparator />
-            <InputOTPGroup>
-                <InputOTPSlot placeholder="М" index={2} value={state.month[0]} />
-                <InputOTPSlot placeholder="М" index={3} value={state.month[1]} />
-            </InputOTPGroup>
-            <InputOTPSeparator />
-            <InputOTPGroup>
-                <InputOTPSlot placeholder="Г" index={4} value={state.year[0]} />
-                <InputOTPSlot placeholder="Г" index={5} value={state.year[1]} />
-            </InputOTPGroup>
-        </InputOTP>
+        <div className="flex gap-4">
+            до
+            <input type="date" className="text-black" onChange={handleDateChange} />
+            или в течении месяца
+            <input type="month" className="text-black" onChange={handleMonthChange} />
+        </div>
     )
 }

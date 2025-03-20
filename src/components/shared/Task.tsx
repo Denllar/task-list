@@ -17,9 +17,9 @@ interface TaskProps {
 }
 
 
-export const Task: React.FC<TaskProps> = ({ task, index, setTasks, currentMonthAndYear }) => {
+export const Task: React.FC<TaskProps> = ({ task, index, setTasks }) => {
   const { deleteTask } = useDeleteTask(task.id);
-  const {editTasks} = useEditTask(currentMonthAndYear);
+  const {editTasks} = useEditTask();
   const [isOp, setIsOp] = React.useState(false)
   const [isDone, setIsDone] = React.useState(task.isDone);
 

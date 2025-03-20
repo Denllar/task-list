@@ -13,7 +13,6 @@ type tTask = {
   day: string;
   month: string;
   year: string;
-  inThisMonth: boolean
   isDone: boolean
 }
 
@@ -36,41 +35,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
     setIsOnChange(false);
   }, [isOpen, task]);
 
-  React.useEffect(() => {
-    setState(prev => ({
-      ...prev,
-      inThisMonth: prev.day.length === 0
-    }));
-  }, [state.day]);
-  
-  const isValidDate = (day: string, month: string, year: string): boolean => {
-    // Если дата не указана (в течение месяца), считаем валидной
-    if (day === '' && month === '' && year === '') {
-      return true;
-    }
-
-    // Проверяем, что все поля заполнены
-    if (!day || !month || !year) {
-      return false;
-    }
-
-    const d = parseInt(day);
-    const m = parseInt(month) - 1; // JS месяцы от 0 до 11
-    const y = 2000 + parseInt(year); // Добавляем 2000 к двузначному году
-
-    const date = new Date(y, m, d);
-
-    return date.getDate() === d &&
-           date.getMonth() === m &&
-           date.getFullYear() === y;
-  }
-
   const requestTaskAndClose = async () => {
-    if (!isValidDate(state.day, state.month, state.year)) {
-      alert('Пожалуйста, введите корректную дату');
-      return;
-    }
-
     await requestToServer({
       ...state,
       isDone: task.isDone // сохраняем текущее состояние isDone из пропса task
@@ -78,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
     await getTasks();
     setIsOpen(false);
   }
-  const isDisabled = state.name.length==0;
+  const isDisabled = state.name.length===0 || state.month.length===0;
 
   if (!isOpen) {
     return null;
@@ -109,16 +74,11 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
         }}/>
 
         <div className="flex items-center gap-[50px] text-white">
-          <div className="flex items-center gap-3">
-            До
-            <InputOTPWithSeparator 
-                state={{ day: state.day, month: state.month, year: state.year }} 
-                setState={(newState) => setState({...state, ...newState})}
-                setIsOnChange={setIsOnChange}
-            />
-          </div>
-          или
-          <LabelDemo value={state.day} disabled={state.month.length < 0}/>
+          <InputOTPWithSeparator 
+              state={{ day: state.day, month: state.month, year: state.year }} 
+              setState={(newState) => setState({...state, ...newState})}
+              setIsOnChange={setIsOnChange}
+          />
         </div>
 
         <div className="flex gap-3 mt-10">

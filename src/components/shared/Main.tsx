@@ -47,6 +47,7 @@ export const Main: React.FC<MainProps> = ({ currentMonthAndYear, tasks, setTasks
         .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем года
         .map((year) => (
           <div key={year} className='flex flex-col justify-center items-center mb-10 mt-10'>
+            <h2 className='text-2xl text-white font-bold mb-4'>20{year} год</h2>
             {Object.keys(groupedTasks[year])
               .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем месяцы
               .map((month) => {

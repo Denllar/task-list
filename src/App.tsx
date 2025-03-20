@@ -12,7 +12,6 @@ export interface ITask {
   day: string;
   month: string;
   year: string;
-  inThisMonth: boolean
   isDone: boolean
 }
 
@@ -23,7 +22,6 @@ const task = {
   day: "",
   month: "",
   year: "",
-  inThisMonth: true,
   isDone: false
 }
 
@@ -41,7 +39,7 @@ function App() {
   const [searchValue, setSearchValue] = React.useState<string>("");
   console.log(tasks)
   const { getTasks } = useGetTask(setTasks);
-  const { postTask } = usePostTask(currentMonthAndYear);
+  const { postTask } = usePostTask();
   
   React.useEffect(() => {
     getTasks();
