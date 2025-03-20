@@ -48,7 +48,7 @@ function App() {
   return (
     <div className='w-[100%] m-auto max-w-[1200px] mt-10 dark text-center'>
       <div className='flex gap-10 items-end'>
-        <img width={100} src={'вуц.jpg'} alt={'logo'}/>
+        <img width={100} src={'ВУЦ.png'} alt={'logo'}/>
         <div className='flex flex-col w-full gap-7'>
           <h1 className='text-[30px] font-bold text-white'>Календарь задач</h1>
           <Search searchValue={searchValue} setSearchValue={setSearchValue} />
