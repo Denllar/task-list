@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Input } from "@/components/ui/input";
-import { InputOTPWithSeparator, LabelDemo } from "@/components/shared";
+import { InputOTPWithSeparator } from "@/components/shared";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ITask } from "@/App";

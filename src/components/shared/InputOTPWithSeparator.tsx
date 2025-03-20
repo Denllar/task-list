@@ -1,10 +1,3 @@
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp"
-
 interface State {
     day: string;
     month: string;
@@ -17,7 +10,7 @@ interface InputOTPWithSeparatorProps {
     setIsOnChange: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function InputOTPWithSeparator({ state, setState, setIsOnChange }: InputOTPWithSeparatorProps) {
+export function InputOTPWithSeparator({ setState, setIsOnChange }: InputOTPWithSeparatorProps) {
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsOnChange(true);
         const selectedDate = new Date(event.target.value);
