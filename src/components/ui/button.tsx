@@ -18,6 +18,10 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        overdue: "border-[3px] border-red-600 hover:bg-accent hover:text-accent-foreground",
+        urgent: "border-[3px] border-orange-500 hover:bg-accent hover:text-accent-foreground",
+        completed: "border-[3px] border-green-400 hover:bg-accent hover:text-accent-foreground",
+        undone: "border-[3px] border-blue-500 hover:bg-accent hover:text-accent-foreground"
       },
       size: {
         default: "h-10 px-4 py-2",

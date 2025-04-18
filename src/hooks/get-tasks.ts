@@ -1,4 +1,4 @@
-import { axios } from "@/services/instance";
+//import { axios } from "@/services/instance";
 import React from 'react';
 
 import { ITask } from "@/App";
@@ -18,18 +18,22 @@ const sortTasks = (tasks: ITask[]): ITask[] => {
   });
 };
 
-export const useGetTask = (setTasks: React.Dispatch<React.SetStateAction<ITask[]>>) => {
-  const getTasks = React.useCallback(async () => {
+export const useGetTask = (setTasks: React.Dispatch<React.SetStateAction<ITask[]>>, setPersonalTasks: React.Dispatch<React.SetStateAction<ITask[]>>) => {
+  const getTasks = React.useCallback(async (isOpenTrash: boolean) => {
     try {
-      const {data} = await axios.get("/tasks");
-      const sortedTasks = sortTasks(data);
-      //console.log(sortedTasks);
-      
+      const tasks = localStorage.getItem(isOpenTrash ? 'remoteTasks' : 'tasks');
+      const data = tasks ? JSON.parse(tasks) : [];   
+      const sortedTasks = sortTasks(data); 
       setTasks(sortedTasks);
+
+      const personalTasks = localStorage.getItem(isOpenTrash ? 'remotePersonalTasks' : 'personalTasks');
+      const personalData = personalTasks ? JSON.parse(personalTasks) : [];   
+      const sortedPersonalTasks = sortTasks(personalData); 
+      setPersonalTasks(sortedPersonalTasks);
     } catch(err) {
       console.log(err);
     }
-  }, [setTasks]);
+  }, [setTasks, setPersonalTasks]);
   
   return { getTasks };
 };
