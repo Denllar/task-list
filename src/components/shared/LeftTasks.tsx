@@ -19,11 +19,13 @@ interface LeftTasksProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPersonalTasks: React.Dispatch<React.SetStateAction<boolean>>;
   isOpenTrash: boolean;
+  selectedDate: Date | null;
+  monthOnlyFilter: boolean;
 }
 
 const date = new Date();
 
-export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTasks, currentDate, tasks, setTasks, searchValue, isOpenTrash }) => {
+export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTasks, currentDate, tasks, setTasks, searchValue, isOpenTrash, selectedDate, monthOnlyFilter }) => {
   const [filter, setFilter] = React.useState<'all' | 'overdue' | 'urgent' | 'completed' | 'undone'>('all');
   const filterName = {
     overdue: 'Просроченные',
@@ -33,6 +35,25 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
   }
   const currentMonthIndex = parseInt(currentDate.currentMonth);
   const { resetAllTasksStatus } = useEditTask();
+
+  // Функция для проверки, просрочена ли задача (по аналогии с isPastTask в Task.tsx)
+  const isTaskOverdue = (task: ITask): boolean => {
+    // Если задача уже выполнена, она не считается просроченной
+    if (task.isDone) {
+      return false;
+    }
+    
+    // Для задач "в течении месяца"
+    if (task.day === '') {
+      // Задача просрочена, если её месяц меньше текущего
+      return parseInt(task.month) < parseInt(currentDate.currentMonth);
+    }
+
+    // Для задач с конкретной датой
+    const taskDate = new Date(`20${task.year}-${task.month}-${task.day}`);
+    const currentDateObj = new Date(`${currentDate.currentYear}-${currentDate.currentMonth}-${currentDate.currentDay}`);
+    return taskDate < currentDateObj;
+  };
 
   const handleResetAllTasks = async () => {
     if (confirm('Вы уверены, что хотите сбросить статус выполнения всех календарных задач?')) {
@@ -64,17 +85,47 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
     localStorage.setItem('tasks', JSON.stringify(tasks));
   };
 
-  const filteredTasks = tasks.filter(task => {
+  // Функция для проверки соответствия задачи выбранной дате из календаря
+  const matchesSelectedDate = (task: ITask): boolean => {
+    if (!selectedDate) return true; // Если дата не выбрана, все задачи проходят
+
+    const taskDay = task.day ? parseInt(task.day, 10) : null;
+    const taskMonth = parseInt(task.month, 10) - 1; // JavaScript месяцы от 0 до 11
+    const taskYear = parseInt(task.year, 10) + 2000; // Предполагаем, что год в формате "23" -> 2023
+    
+    if (monthOnlyFilter) {
+      // Фильтрация только по месяцу и году
+      return taskMonth === selectedDate.getMonth() && 
+             taskYear === selectedDate.getFullYear();
+    } else {
+      // Фильтрация по конкретной дате
+      // Если задача не привязана к конкретному дню, проверяем только месяц и год
+      if (taskDay === null) {
+        return taskMonth === selectedDate.getMonth() && 
+               taskYear === selectedDate.getFullYear();
+      } else {
+        // Проверяем точное совпадение дня, месяца и года
+        return taskDay === selectedDate.getDate() && 
+               taskMonth === selectedDate.getMonth() && 
+               taskYear === selectedDate.getFullYear();
+      }
+    }
+  };
+
+  // Функция для проверки соответствия задачи выбранному фильтру статуса
+  const matchesStatusFilter = (task: ITask): boolean => {
+    if (filter === 'all') return true; // Если фильтр не выбран, все задачи проходят
+    
+    if (filter === 'overdue') {
+      return isTaskOverdue(task);
+    }
+    
     const taskDate = new Date(`20${task.year}-${task.month}-${task.day}`);
     const threeDaysFromNow = new Date(date);
     threeDaysFromNow.setDate(date.getDate() + 3);
 
     // Для задач "в течении месяца"
     if (task.day === '') {
-      if (filter === 'overdue') {
-        // Задача просрочена только если её месяц меньше текущего
-        return task.isDone === false && parseInt(task.month) < parseInt(currentDate.currentMonth);
-      }
       if (filter === 'urgent') {
         // Задача срочная, если она в текущем месяце
         return task.isDone === false && task.month === currentDate.currentMonth;
@@ -85,24 +136,26 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
       if (filter === 'undone') {
         return !task.isDone;
       }
-      return true;
+    } else {
+      // Для задач с конкретной датой
+      if (filter === 'urgent') {
+        return task.isDone === false && taskDate >= date && taskDate <= threeDaysFromNow;
+      }
+      if (filter === 'completed') {
+        return task.isDone === true;
+      }
+      if (filter === 'undone') {
+        return !task.isDone;
+      }
     }
-
-    // Для задач с конкретной датой - оставляем старую логику
-    if (filter === 'overdue') {
-      return task.isDone === false && taskDate < date;
-    }
-    if (filter === 'urgent') {
-      return task.isDone === false && taskDate >= date && taskDate <= threeDaysFromNow;
-    }
-    if (filter === 'completed') {
-      return task.isDone === true;
-    }
-    if (filter === 'undone') {
-      return !task.isDone;
-    }
+    
     return true;
-  });
+  };
+
+  // Применяем оба фильтра: по дате и по статусу
+  const filteredTasks = tasks.filter(task => 
+    matchesSelectedDate(task) && matchesStatusFilter(task)
+  );
 
   // Группируем задачи по месяцам
   const groupedTasks = filteredTasks.reduce((acc, task) => {
@@ -133,16 +186,20 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
 
   const countTasks = (filterType: 'overdue' | 'urgent' | 'completed' | 'undone') => {
     return tasks.filter(task => {
+      // Сначала проверяем соответствие выбранной дате из календаря
+      if (!matchesSelectedDate(task)) return false;
+
+      // Затем проверяем соответствие статусу
+      if (filterType === 'overdue') {
+        return isTaskOverdue(task);
+      }
+      
       const taskDate = new Date(`20${task.year}-${task.month}-${task.day}`);
       const threeDaysFromNow = new Date(date);
       threeDaysFromNow.setDate(date.getDate() + 3);
 
       // Для задач "в течении месяца"
       if (task.day === '') {
-        if (filterType === 'overdue') {
-          // Задача просрочена только если её месяц меньше текущего
-          return task.isDone === false && parseInt(task.month) < parseInt(currentDate.currentMonth);
-        }
         if (filterType === 'urgent') {
           // Задача срочная, если она в текущем месяце
           return task.isDone === false && task.month === currentDate.currentMonth;
@@ -156,10 +213,7 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
         return false;
       }
 
-      // Для задач с конкретной датой - оставляем старую логику
-      if (filterType === 'overdue') {
-        return task.isDone === false && taskDate < date;
-      }
+      // Для задач с конкретной датой
       if (filterType === 'urgent') {
         return task.isDone === false && taskDate >= date && taskDate <= threeDaysFromNow;
       }
@@ -220,9 +274,9 @@ export const LeftTasks: React.FC<LeftTasksProps> = ({ setIsOpen, setIsPersonalTa
           );
 
           return daysWithTasks ? (
-            <div key={month} className='flex w-full flex-col gap-4 justify-center items-center '>
+            <div key={month} className='flex w-full flex-col gap-4 mb-6 justify-center items-center '>
               <h3 className='text-xl text-white font-bold mb-4'>{months[parseInt(month) - 1]}</h3>
-              <div className='flex flex-col w-full justify-center items-center'>
+              <div className='flex flex-col space-y-4 w-full justify-center items-center'>
                 {groupedTasks[month]
                   .filter(task => task.name.toLowerCase().includes(searchValue.toLowerCase()))
                   .map((task) => {

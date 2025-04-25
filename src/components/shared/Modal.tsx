@@ -98,6 +98,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
           <InputOTPWithSeparator
             state={{ day: state.day, month: state.month, year: state.year }}
             setState={(newState) => setState({ ...state, ...newState })}
+            isPersonalTasks={isPersonalTasks}
           />
 
           <div className="text-black">

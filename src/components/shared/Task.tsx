@@ -118,7 +118,7 @@ export const Task: React.FC<TaskProps> = ({ task, setTasks, currentDate, isPerso
         <Tooltip>
           <TooltipTrigger asChild>
             <div className={cn(
-              "flex w-full items-center bg-white mb-4 hover:shadow-lg hover:border-gray-300 hover:shadow-gray-300/40 rounded-xl py-4 px-5 hover:-translate-y-0.5 transition-all duration-200 ease-in-out",
+              "flex w-full items-center bg-white hover:shadow-lg hover:border-gray-300 hover:shadow-gray-300/40 rounded-xl py-4 px-5 hover:-translate-y-0.5 transition-all duration-200 ease-in-out",
               {
                 'border-4 border-green-600': isDone,
                 'border-4 border-red-600': !isDone && isPastTask() !== ''
@@ -134,7 +134,14 @@ export const Task: React.FC<TaskProps> = ({ task, setTasks, currentDate, isPerso
               {/* Правая часть с датой и кнопками */}
               <div className="flex items-center gap-2 pl-4 flex-shrink-0">
                 <div className="flex flex-col text-gray-400 whitespace-nowrap">
-                  {task.day === '' ? "В течении месяца" : `до ${task.day} числа`}
+                  {
+                    !isPersonalTasks && (
+                      <>
+                        {task.day === '' ? "В течении месяца" : `до ${task.day} числа`}
+                      </>
+                    )
+                  }
+                  
                   <p className="text-gray-400">
                     {task.author}
                   </p>

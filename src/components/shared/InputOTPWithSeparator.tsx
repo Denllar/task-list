@@ -9,9 +9,10 @@ interface State {
 interface InputOTPWithSeparatorProps {
     state: State;
     setState: (newState: State) => void;
+    isPersonalTasks: boolean;
 }
 
-export function InputOTPWithSeparator({ state, setState }: InputOTPWithSeparatorProps) {
+export function InputOTPWithSeparator({ state, setState, isPersonalTasks }: InputOTPWithSeparatorProps) {
     // Форматируем начальную дату для input type="date"
     const getInitialDate = () => {
         if (state.year && state.month && state.day) {
@@ -59,24 +60,30 @@ export function InputOTPWithSeparator({ state, setState }: InputOTPWithSeparator
             year: year.slice(-2), // Двузначный год
         });
     };
-    
+
     return (
         <div>
             <div className="flex gap-4 items-center mb-10">
                 до
-                <input 
-                    type="date" 
-                    className="text-black" 
+                <input
+                    type="date"
+                    className="text-black"
                     onChange={handleDateChange}
-                    value={getInitialDate()} 
+                    value={getInitialDate()}
                 />
-                или в течении месяца
-                <input 
-                    type="month" 
-                    className="text-black" 
-                    onChange={handleMonthChange}
-                    value={getInitialMonth()} 
-                />
+                {
+                    !isPersonalTasks && (
+                        <>
+                            или в течении месяца
+                            <input
+                                type="month"
+                                className="text-black"
+                                onChange={handleMonthChange}
+                                value={getInitialMonth()}
+                            />
+                        </>
+                    )
+                }
             </div>
         </div>
     )
