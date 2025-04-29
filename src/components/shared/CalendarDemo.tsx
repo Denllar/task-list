@@ -90,7 +90,7 @@ export function CalendarDemo({ onSelectDate, tasks, externalSelectedDate }: Cale
       day: (day: number, options?: { width?: string }) => {
         console.log(options);
         
-        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
         return days[day];
       },
       month: (month: number, options?: { width?: string }) => {
@@ -424,6 +424,7 @@ export function CalendarDemo({ onSelectDate, tasks, externalSelectedDate }: Cale
         onSelect={handleDateSelect}
         numberOfMonths={8}
         locale={customRussianLocale} // Используем настроенную русскую локализацию
+        weekStartsOn={1} // Неделя начинается с понедельника
         className="rounded-xl bg-violet-600 text-white"
         classNames={{
           caption: "flex justify-center pt-1 relative items-center text-white month-caption",
