@@ -119,8 +119,6 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, task, setTasks,
         </div>
       </div>
     </div>,
-
     modalRoot
-
   );
 };

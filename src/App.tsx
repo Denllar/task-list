@@ -4,6 +4,8 @@ import { useGetTask } from '@/hooks/get-tasks';
 import { usePostTask } from '@/hooks/post-task';
 import { CurrentDateTime } from './components/shared/CurrentDateTime';
 import { Button } from './components/ui/button';
+import { Birthday } from './components/shared/Birthday';
+import { TodayBirthdays } from './components/shared/TodayBirthdays';
 
 export interface ITask {
   id: string;
@@ -86,8 +88,10 @@ function App() {
                 <Button variant="outline" onClick={() => setIsOpenTrash(false)}>В главное меню</Button>
               </div>
           }
+            <Birthday/>
         </div>
       </div>
+      <TodayBirthdays />
       <Main
         setIsOpen={setIsOpen}
         setIsPersonalTasks={setIsPersonalTasks}
