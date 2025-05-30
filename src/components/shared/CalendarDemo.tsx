@@ -378,17 +378,21 @@ export function CalendarDemo({ onSelectDate, tasks, externalSelectedDate }: Cale
     }
   };
 
-  // Функция для преобразования заголовков месяцев
+  // Функция для преобразования заголовков месяцев и выделения выходных в head_cell
   useEffect(() => {
     // Отложенное выполнение для уверенности, что календарь полностью отрендерился
     const timeout = setTimeout(() => {
       if (calendarRef.current) {
-        // Находим все заголовки месяцев и делаем первую букву заглавной
+        // Находим все заголовки дней недели
         const headCells = calendarRef.current.querySelectorAll('.rdp-head_cell');
         headCells.forEach(cell => {
           if (cell.textContent) {
             // Преобразуем текст - переводим все буквы в верхний регистр
             cell.textContent = cell.textContent.toUpperCase();
+            // Если это СБ или ВС, красим в серый
+            if (cell.textContent === 'СБ' || cell.textContent === 'ВС') {
+              (cell as HTMLElement).style.color = '#bbbbbd';
+            }
           }
         });
 
@@ -405,7 +409,6 @@ export function CalendarDemo({ onSelectDate, tasks, externalSelectedDate }: Cale
             }
           }
         });
-        
         // Подсвечиваем выбранный месяц, если он есть
         if (lastSelectedMonthRef.current) {
           highlightSelectedMonth();
@@ -435,10 +438,12 @@ export function CalendarDemo({ onSelectDate, tasks, externalSelectedDate }: Cale
           day_disabled: "text-gray-400 font-normal cursor-not-allowed" // Только текст серого цвета без фона
         }}
         modifiers={{
-          disabled: (day) => !hasTasksOnDate(day) // Отключаем дни без задач
+          disabled: (day) => !hasTasksOnDate(day), // Отключаем дни без задач
+          weekend: (day) => day.getDay() === 0 || day.getDay() === 6 // СБ и ВС
         }}
         modifiersStyles={{
-          disabled: { opacity: 1 } // Полная непрозрачность
+          disabled: { opacity: 1 }, // Полная непрозрачность
+          weekend: { backgroundColor: 'rgba(230, 231, 233, 0.4)' } // Серый фон для выходных
         }}
       />
     </div>
